@@ -1,0 +1,57 @@
+string startDateString = "28/05/2022";
+string endDateString = "3/06/2022";
+
+DateTime startDate = DateTime.Parse(startDateString);
+DateTime endDate = DateTime.Parse(endDateString);
+
+while (startDate <= endDate)
+{
+    Console.WriteLine(startDate.ToString("yyyyMMdd"));
+    startDate = startDate.AddDays(1);
+}
+---------
+string startDateString = "28/05/2022";
+string endDateString = "3/06/2022";
+
+DateTime startDate = DateTime.Parse(startDateString);
+DateTime endDate = DateTime.Parse(endDateString);
+
+List<string> dateList = new List<string>();
+while (startDate <= endDate)
+{
+    dateList.Add(startDate.ToString("yyyyMMdd"));
+    startDate = startDate.AddDays(1);
+}
+
+string dates = string.Join(" ", dateList);
+Console.WriteLine(dates);
+---------
+string[] dates = { "20220528", "20220529", "20220530", "20220531", "20220601", "20220602", "20220603" };
+
+foreach (string date in dates)
+{
+    string folderName = "C:\\Images\\" + date;
+    string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+    Console.WriteLine("Folder: " + folderName);
+    Console.WriteLine("Files: " + string.Join(", ", fileNames));
+}
+-----------
+string datesString = "20220528 20220529 20220530 20220531 20220601 20220602 20220603";
+string[] dates = datesString.Split(' ');
+
+foreach (string date in dates)
+{
+    string folderName = "C:\\Images\\" + date;
+    string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+    Console.WriteLine("Folder: " + folderName);
+    Console.WriteLine("Files: " + string.Join(", ", fileNames));
+}
+--------
+OpenFileDialog openFileDialog = new OpenFileDialog();
+
+if (openFileDialog.ShowDialog() == DialogResult.OK)
+{
+    string fileName = openFileDialog.FileName;
+    Console.WriteLine("Selected file: " + fileName);
+}
+

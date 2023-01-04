@@ -1,0 +1,68 @@
+using System;
+
+namespace ConsoleApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            DateTime startDate = DateTime.Parse("28/05/2022");
+            DateTime endDate = DateTime.Parse("3/06/2022");
+
+            // Add 1 day to startDate to exclude it from the result
+            startDate = startDate.AddDays(1);
+
+            // Subtract 1 day from endDate to exclude it from the result
+            endDate = endDate.AddDays(-1);
+
+            for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                Console.WriteLine(date.ToString("d"));
+            }
+        }
+    }
+}
+----------
+using System;
+
+namespace ConsoleApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            DateTime startDate = DateTime.Parse("28/05/2022");
+            DateTime endDate = DateTime.Parse("3/06/2022");
+
+            // Add 1 day to startDate to exclude it from the result
+            startDate = startDate.AddDays(1);
+
+            // Subtract 1 day from endDate to exclude it from the result
+            endDate = endDate.AddDays(-1);
+
+            for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                Console.WriteLine(date.ToString("yyyyMMdd"));
+            }
+        }
+    }
+}
+----
+using System;
+
+namespace ConsoleApp
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            DateTime startDate = DateTime.Parse("28/05/2022");
+            DateTime endDate = DateTime.Parse("3/06/2022");
+
+            for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                Console.WriteLine(date.ToString("d"));
+            }
+        }
+    }
+}

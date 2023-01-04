@@ -1,0 +1,86 @@
+string datesString = "20220528 20220529 20220530 20220531 20220601 20220602 20220603";
+string[] dates = datesString.Split(' ');
+
+foreach (string date in dates)
+{
+    string folderName = "C:\\Images\\" + date;
+    string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+    Console.WriteLine("Folder: " + folderName);
+    Console.WriteLine("Files: " + string.Join(", ", fileNames));
+
+    // Create a new PictureBox for each image file
+    foreach (string fileName in fileNames)
+    {
+        PictureBox pictureBox = new PictureBox();
+        pictureBox.Image = Image.FromFile(fileName);
+        pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+        pictureBox.Click += (sender, e) =>
+        {
+            // Display the image in the PictureBox when clicked
+            pictureBox.Size = new Size(500, 500);
+            pictureBox.Visible = true;
+        };
+        this.Controls.Add(pictureBox);
+    }
+}
+------
+string datesString = "20220528 20220529 20220530 20220531 20220601 20220602 20220603";
+string[] dates = datesString.Split(' ');
+
+foreach (string date in dates)
+{
+    string folderName = "C:\\Images\\" + date;
+    string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+    Console.WriteLine("Folder: " + folderName);
+    Console.WriteLine("Files: ");
+    int i = 1;
+    foreach (string fileName in fileNames)
+    {
+        Console.WriteLine(i + ": " + fileName);
+        i++;
+    }
+    Console.WriteLine("Enter the number of the image you want to view (or enter 0 to skip):");
+    int selection = int.Parse(Console.ReadLine());
+    if (selection > 0 && selection <= fileNames.Length)
+    {
+        string fileToView = fileNames[selection - 1];
+        // Open the image file in the default image viewer
+        Process.Start(fileToView);
+    }
+}
+--------
+string datesString = "20220528 20220529 20220530 20220531 20220601 20220602 20220603";
+string[] dates = datesString.Split(' ');
+
+foreach (string date in dates)
+{
+    string folderName = "C:\\Images\\" + date;
+    string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+
+    // Create a ListBox to display the file names
+    ListBox listBox = new ListBox();
+    foreach (string fileName in fileNames)
+    {
+        listBox.Items.Add(fileName);
+    }
+
+    // Create a Button to allow the user to select an image
+    Button selectButton = new Button();
+    selectButton.Content = "Select";
+    selectButton.Click += (sender, args) =>
+    {
+        // Get the selected file name and open it in the default image viewer
+        string fileToView = listBox.SelectedItem as string;
+        Process.Start(fileToView);
+    };
+
+    // Add the ListBox and Button to a StackPanel
+    StackPanel stackPanel = new StackPanel();
+    stackPanel.Children.Add(listBox);
+    stackPanel.Children.Add(selectButton);
+
+    // Display the StackPanel in a Window
+    Window window = new Window();
+    window.Content = stackPanel;
+    window.ShowDialog();
+}
