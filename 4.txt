@@ -1,0 +1,173 @@
+private void richTextBox1_SelectionChanged(object sender, EventArgs e)
+{
+    if (richTextBox1.SelectedText.StartsWith(@"C:\"))
+    {
+        Process.Start(richTextBox1.SelectedText);
+    }
+}
+----------
+private void richTextBox1_SelectionChanged(object sender, EventArgs e)
+{
+    if (richTextBox1.SelectedText.StartsWith(@"C:\"))
+    {
+        Process.Start("photos.exe", richTextBox1.SelectedText);
+    }
+}
+---------
+using System.Threading;
+
+namespace ConsoleApplication
+{
+    public static class LongRunningTask
+    {
+        public static void LoadPageWhileWaiting(Action longRunningTask)
+        {
+            ThreadStart threadStart = delegate
+            {
+                longRunningTask();
+            };
+
+            var thread = new Thread(threadStart);
+            thread.Start();
+
+            // Load the page here while the long-running task executes in the background
+        }
+    }
+}
+
+LongRunningTask.LoadPageWhileWaiting(CheckImageFiles);
+
+...
+
+private static void CheckImageFiles()
+{
+    // Code to check image files goes here
+}
+------
+string[] dates = { "20220528", "20220529", "20220530", "20220531", "20220601", "20220602", "20220603" };
+
+LongRunningTask.LoadPageWhileWaiting(() =>
+{
+    foreach (string date in dates)
+    {
+        string folderName = "C:\\Images\\" + date;
+        string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+        Console.WriteLine("Folder: " + folderName);
+        Console.WriteLine("Files: " + string.Join(", ", fileNames));
+    }
+});
+--------
+string[] dates = { "20220528", "20220529", "20220530", "20220531", "20220601", "20220602", "20220603" };
+
+// Create a ManualResetEvent to block the main thread until all searches are complete
+ManualResetEvent resetEvent = new ManualResetEvent(false);
+
+// Get a reference to the RichTextBox control
+RichTextBox richTextBox = this.richTextBox1;
+
+foreach (string date in dates)
+{
+    string folderName = "C:\\Images\\" + date;
+
+    // Start a new thread to search for files in the background
+    Thread thread = new Thread(() => 
+    {
+        string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+
+        // Append the search results to the RichTextBox control
+        richTextBox.AppendText("Folder: " + folderName + Environment.NewLine);
+        richTextBox.AppendText("Files: " + string.Join(", ", fileNames) + Environment.NewLine);
+
+        // Signal the ManualResetEvent to indicate that the search is complete
+        resetEvent.Set();
+    });
+    thread.Start();
+
+    // Append a loading message to the RichTextBox control
+    richTextBox.AppendText("Loading..." + Environment.NewLine);
+
+    // Block the main thread until the search is complete
+    resetEvent.WaitOne();
+
+    // Reset the ManualResetEvent to block the main thread again on the next iteration
+    resetEvent.Reset();
+}
+
+-----
+string[] GetFilesWithLoading(string folderName)
+{
+    // Display the loading message
+    richTextBox.AppendText("Loading..." + Environment.NewLine);
+
+    // Get the files
+    string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+
+    // Hide the loading message
+    richTextBox.AppendText("Done." + Environment.NewLine);
+
+    return fileNames;
+}
+
+foreach (string date in dates)
+{
+    string folderName = "C:\\Images\\" + date;
+    string[] fileNames = GetFilesWithLoading(folderName);
+    richTextBox.AppendText("Folder: " + folderName + Environment.NewLine);
+    richTextBox.AppendText("Files: " + string.Join(", ", fileNames) + Environment.NewLine);
+}
+----
+string[] GetFilesWithLoading(string folderName)
+{
+    // Display the loading image
+    pictureBox.Image = Properties.Resources.loading;
+
+    // Get the files
+    string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+
+    // Hide the loading image
+    pictureBox.Image = null;
+
+    return fileNames;
+}
+
+foreach (string date in dates)
+{
+    string folderName = "C:\\Images\\" + date;
+    string[] fileNames = GetFilesWithLoading(folderName);
+    richTextBox.AppendText("Folder: " + folderName + Environment.NewLine);
+    richTextBox.AppendText("Files: " + string.Join(", ", fileNames) + Environment.NewLine);
+}
+------
+string[] GetFilesWithLoading(string folderName)
+{
+    // Create a new progress bar form
+    Form progressForm = new Form();
+    progressForm.Text = "Loading";
+    progressForm.StartPosition = FormStartPosition.CenterScreen;
+    progressForm.FormBorderStyle = FormBorderStyle.FixedSingle;
+
+    // Add a progress bar control to the form
+    ProgressBar progressBar = new ProgressBar();
+    progressBar.Dock = DockStyle.Fill;
+    progressForm.Controls.Add(progressBar);
+
+    // Show the form
+    progressForm.Show();
+
+    // Get the files
+    string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+
+    // Close the form
+    progressForm.Close();
+
+    return fileNames;
+}
+
+foreach (string date in dates)
+{
+    string folderName = "C:\\Images\\" + date;
+    string[] fileNames = GetFilesWithLoading(folderName);
+    richTextBox.AppendText("Folder: " + folderName + Environment.NewLine);
+    richTextBox.AppendText("Files: " + string.Join(", ", fileNames) + Environment.NewLine);
+}
+
