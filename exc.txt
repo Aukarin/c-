@@ -1,0 +1,262 @@
+using System;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using Microsoft.Office.Interop.Excel;
+
+namespace WindowsFormsApplication1
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // Create a new Excel application.
+            Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
+
+            // Create a new empty workbook.
+            Microsoft.Office.Interop.Excel.Workbook workbook = excel.Workbooks.Add(Type.Missing);
+
+            // Create a new worksheet.
+            Microsoft.Office.Interop.Excel.Worksheet worksheet = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Sheets[1];
+
+            // Export the DataTable to an Excel worksheet.
+            DataTable dt = (DataTable)(dataGridView1.DataSource);
+            worksheet.Cells[1, 1].LoadFromDataTable(dt, true);
+
+            // Save the workbook.
+            workbook.SaveAs("C:\\MyExcelFile.xlsx");
+
+            // Close the Excel application.
+            excel.Quit();
+        }
+    }
+}
+----------------
+using System;
+using System.Windows.Forms;
+
+namespace WindowsFormsApplication1
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+
+            // Add a handler for the CellContentClick event.
+            dataGridView1.CellContentClick += new DataGridViewCellEventHandler(dataGridView1_CellContentClick);
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Check if the clicked cell is a cell in the "Image" column.
+            if (e.ColumnIndex == 3)
+            {
+                // Get the path to the image file.
+                string imagePath = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+
+                // Open the image file.
+                System.Diagnostics.Process.Start(imagePath);
+            }
+        }
+    }
+}
+------
+using System;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace WindowsFormsApplication1
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+
+            // Create a new DataTable.
+            DataTable dt = new DataTable();
+
+            // Add columns to the DataTable.
+            dt.Columns.Add("Drive", typeof(string));
+            dt.Columns.Add("Folder", typeof(string));
+            dt.Columns.Add("Subfolder", typeof(string));
+
+            // Get the list of dates.
+            string[] dates = { "20220528", "20220529", "20220530", "20220531", "20220601", "20220602", "20220603" };
+
+            // Iterate over the list of dates.
+            foreach (string date in dates)
+            {
+                // Get the list of image files in the folder.
+                string folderName = "C:\\Images\\" + date;
+                string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+
+                // Add a row to the DataTable for each image file.
+                foreach (string fileName in fileNames)
+                {
+                    // Split the file name into its parts.
+                    string[] parts = fileName.Split('\\');
+
+                    // Add a new row to the DataTable.
+                    dt.Rows.Add(parts[0], parts[1], parts[2]);
+                }
+            }
+
+            // Bind the DataTable to the DataGridView.
+            dataGridView1.DataSource = dt;
+        }
+    }
+}
+----
+ dataGridView1.Columns[2].Width = 200;
+-------
+  dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+------
+
+foreach (string date in dates)
+{
+    string folderName = "C:\\Images\\" + date;
+    string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+
+    // Add the file names to the DataGridView
+    foreach (string fileName in fileNames)
+    {
+        string[] parts = fileName.Split('\\');
+
+        int index = dataGridView1.Rows.Add();
+        DataGridViewRow row = dataGridView1.Rows[index];
+        row.Cells["Date"].Value = date;
+        row.Cells["FilePath1"].Value = parts[0];
+        row.Cells["FilePath2"].Value = parts[1];
+        row.Cells["FileName"].Value = parts[2];
+    }
+}
+---
+using System.Threading;
+
+// Declare the CancellationTokenSource and CancellationToken at the class level
+private CancellationTokenSource cancelTokenSource;
+private CancellationToken cancelToken;
+
+// In the button click event handler for the Cancel button
+private void button1_Click(object sender, EventArgs e)
+{
+    // Cancel the operation if the CancellationTokenSource is not null
+    if (cancelTokenSource != null)
+    {
+        cancelTokenSource.Cancel();
+    }
+}
+
+// In the method where you are processing the data and displaying it in the DataGridView
+private async void ProcessData()
+{
+    // Create a new CancellationTokenSource and CancellationToken
+    cancelTokenSource = new CancellationTokenSource();
+    cancelToken = cancelTokenSource.Token;
+
+    try
+    {
+        foreach (string date in dates)
+        {
+            // Check if the operation has been cancelled
+            if (cancelToken.IsCancellationRequested)
+            {
+                break;
+            }
+
+            string folderName = "C:\\Images\\" + date;
+            string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+
+            // Add the file names to the DataGridView
+            foreach (string fileName in fileNames)
+            {
+                string[] parts = fileName.Split('\\');
+
+                int index = dataGridView1.Rows.Add();
+                DataGridViewRow row = dataGridView1.Rows[index];
+                row.Cells["Date"].Value = date;
+                row.Cells["FilePath1"].Value = parts[0];
+                row.Cells["FilePath2"].Value = parts[1];
+                row.Cells["FileName"].Value = parts[2];
+            }
+        }
+    }
+    catch (OperationCanceledException)
+    {
+        // Handle the cancelled operation
+    }
+    finally
+    {
+        // Dispose of the CancellationTokenSource
+        cancelTokenSource.Dispose();
+        cancelTokenSource = null;
+    }
+}
+-------
+https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.backgroundworker?view=netframework-4.8
+--
+string fileNameWithoutExtension = Path.GetFileNameWithoutExtension("C:\MyExcelFile.xlsx");
+string fileExtension = Path.GetExtension("C:\MyExcelFile.xlsx");
+string[] existingFiles = Directory.GetFiles("C:\", "*" + fileExtension);
+int fileCount = existingFiles.Count(x => x.StartsWith(fileNameWithoutExtension));
+
+if (fileCount > 0)
+{
+fileNameWithoutExtension += "-" + fileCount;
+}
+
+string newFileName = fileNameWithoutExtension + fileExtension;
+
+workbook.SaveAs("C:\" + newFileName);
+----
+string[] GetFilesWithLoading(string folderName)
+{
+    // Create a new progress bar form
+    Form progressForm = new Form();
+    progressForm.Text = "Loading";
+    progressForm.StartPosition = FormStartPosition.CenterScreen;
+    progressForm.FormBorderStyle = FormBorderStyle.FixedSingle;
+
+    // Add a progress bar control to the form
+    ProgressBar progressBar = new ProgressBar();
+    progressBar.Dock = DockStyle.Fill;
+    progressForm.Controls.Add(progressBar);
+
+    // Add a "Cancel" button to the form
+    Button cancelButton = new Button();
+    cancelButton.Text = "Cancel";
+    cancelButton.Dock = DockStyle.Bottom;
+    cancelButton.Click += (sender, e) => { progressForm.Close(); };
+    progressForm.Controls.Add(cancelButton);
+
+    // Show the form
+    progressForm.Show();
+
+    // Get the files
+    string[] fileNames = Directory.GetFiles(folderName, "*.jpg");
+
+    // Close the form
+    progressForm.Close();
+
+    return fileNames;
+}
+
+foreach (string date in dates)
+{
+    string folderName = "C:\\Images\\" + date;
+    string[] fileNames = GetFilesWithLoading(folderName);
+    richTextBox.AppendText("Folder: " + folderName + Environment.NewLine);
+    richTextBox.AppendText("Files: " + string.Join(", ", fileNames) + Environment.NewLine);
+
+    // Update the progress form
+    Application.DoEvents();
+}
