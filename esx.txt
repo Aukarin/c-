@@ -1,0 +1,45 @@
+private void buttonExport_Click(object sender, EventArgs e)
+{
+    // Create a SaveFileDialog object
+    SaveFileDialog saveFileDialog = new SaveFileDialog();
+    
+    // Set the filter options and filter index
+    saveFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*";
+    saveFileDialog.FilterIndex = 1;
+
+    // Set the default file extension
+    saveFileDialog.DefaultExt = "xlsx";
+
+    // Set the file title
+    saveFileDialog.Title = "Save the Excel file";
+
+    // Set the initial directory
+    saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+    // Show the SaveFileDialog
+    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+    {
+        // Create a new Excel package
+        using (var package = new ExcelPackage())
+        {
+            // Add a new worksheet to the empty workbook
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Sheet1");
+
+            // Add the DataGridView data to the worksheet
+            for (int i = 0; i < dataGridView.Columns.Count; i++)
+            {
+                worksheet.Cells[1, i + 1].Value = dataGridView.Columns[i].HeaderText;
+            }
+            for (int i = 0; i < dataGridView.Rows.Count; i++)
+            {
+                for (int j = 0; j < dataGridView.Columns.Count; j++)
+                {
+                    worksheet.Cells[i + 2, j + 1].Value = dataGridView.Rows[i].Cells[j].Value;
+                }
+            }
+
+            // Save the workbook to the file path
+            package.SaveAs(new FileInfo(saveFileDialog.FileName));
+        }
+    }
+}
