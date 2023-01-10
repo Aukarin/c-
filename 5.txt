@@ -1,0 +1,68 @@
+<?php
+    $imagesPerPage = 100;
+    $page = $_GET['page'];
+    $offset = ($page - 1) * $imagesPerPage;
+
+    $sql = "SELECT * FROM images LIMIT $imagesPerPage OFFSET $offset";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        // Code to display the image
+    }
+?>
+----
+<?php
+    $imagesPerPage = 100;
+    $page = $_GET['page'];
+    $offset = ($page - 1) * $imagesPerPage;
+
+    $sql = "SELECT * FROM images LIMIT $imagesPerPage OFFSET $offset";
+    $result = mysqli_query($conn, $sql);
+
+    // Code to display the images
+
+    // Code to generate page buttons
+
+    $sql = "SELECT COUNT(*) as total_images FROM images";
+    $result = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_assoc($result);
+    $totalImages = $row['total_images'];
+
+    $totalPages = ceil($totalImages / $imagesPerPage);
+    for ($i = 1; $i <= $totalPages; $i++) {
+        if ($i == $page) {
+            echo "<strong>$i</strong> ";
+        } else {
+            echo "<a href='images.php?page=$i'>$i</a> ";
+        }
+    }
+?>
+---
+xlWorkSheet.Columns[i].ColumnWidth = 18;
+----
+xlWorkSheet.Columns.AutoFit();
+---
+using System;
+using System.Windows.Forms;
+
+public class Form1 : Form
+{
+    private ComboBox comboBox1;
+
+    public Form1()
+    {
+        // Initialize the combo box
+        comboBox1 = new ComboBox();
+
+        // Add items to the combo box
+        comboBox1.Items.Add("Item 1");
+        comboBox1.Items.Add("Item 2");
+        comboBox1.Items.Add("Item 3");
+
+        // Add the combo box to the form
+        this.Controls.Add(comboBox1);
+    }
+}
+---
+var data = new List<string> { "Item 1", "Item 2", "Item 3" };
+comboBox1.DataSource = data;
