@@ -1,0 +1,39 @@
+คุณสามารถใช้ ADO.NET เพื่อเชื่อมต่อกับ SQL Server โดยใช้คลาส SqlConnection ซึ่งจะต้องเพิ่ม reference ของ System.Data.SqlClient ลงในโปรเจคของคุณ
+using System.Data.SqlClient;
+
+string connectionString = "Data Source=<server>;Initial Catalog=<database>;User ID=<username>;Password=<password>;";
+using (SqlConnection connection = new SqlConnection(connectionString))
+{
+    connection.Open();
+    // ทำงานต่อไปที่ฐานข้อมูล
+    connection.Close();
+}
+
+string queryString = "SELECT * FROM table_name";
+using (SqlCommand command = new SqlCommand(queryString, connection))
+{
+    using (SqlDataReader reader = command.ExecuteReader())
+    {
+        while (reader.Read())
+        {
+            Console.WriteLine(reader[0]);
+        }
+    }
+}
+------
+string connectionString = "Data Source=www.144.66....;Initial Catalog=<database>;User ID=<username>;Password=<password>;";
+using (SqlConnection connection = new SqlConnection(connectionString))
+{
+    connection.Open();
+    // ทำงานต่อไปที่ฐานข้อมูล
+    connection.Close();
+}
+-
+string connectionString = "Data Source=localhost;Initial Catalog=mydb;User ID=sa;Password=password;";
+
+
+---
+"C# เชื่อมต่อ SQL Server Management Studio ผ่าน IP" 
+---
+ I found this: Data Source=192.168.1.12,1433;Network Library=DBMSSOCN; Initial Catalog=sillogos;User ID=sa;Password=1324;
+Source=.\SQLEXPRESS;AttachDbFilename=C:\backup\sillogos.mdf;Integrated Security=True;Connect Timeout=30;User Instance=True
