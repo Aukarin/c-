@@ -1,0 +1,39 @@
+<?php
+    // รับข้อมูลจาก Jexcel ผ่าน AJAX
+    $data = json_decode($_POST['data']);
+
+    // แปลงข้อมูลเป็นไฟล์ JSON
+    $json = json_encode($data);
+
+    // บันทึกไฟล์ JSON
+    file_put_contents('data.json', $json);
+?>
+
+
+$.ajax({
+    type: "POST",
+    url: "save-data.php",
+    data: { data: JSON.stringify(data) },
+    success: function(response) {
+        console.log("Data saved successfully");
+    }
+});
+----
+    worksheet.Cells[1, 1].AutoFitColumns();
+    worksheet.Cells[1, 2].AutoFitColumns();
+    worksheet.Cells[1, 3].AutoFitColumns();
+----
+ // สร้างตัวอักษร A-Z ในแถวแรก
+   worksheet.Cell("A1").Value = "Column 1";
+    worksheet.Cell("B1").Value = "Column 2";
+    worksheet.Cell("C1").Value = "Column 3";
+    for (int i = 1; i <= 26; i++)
+    {
+        worksheet[1, i].Value = ((char)('A' + i - 1)).ToString();
+    }
+ในบรรทัด worksheet[1, i].Value = ((char)('A' + i - 1)).ToString(); คือ ใส่ค่าให้กับเซลล์ในแถว 1 คอลัมน์ i
+((char)('A' + i - 1)) เป็นการแปลงค่า i เป็นตัวอักษร ASCII โดยเริ่มจาก A ถ้า i=1 จะเป็น A เมื่อ i=2 จะเป็น B เป็นต้น
+.ToString() เป็นการแปลงค่าเป็นสตริง เพื่อใส่ในเซลล์
+---
+dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
