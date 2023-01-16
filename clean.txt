@@ -1,0 +1,93 @@
+using System;
+using System.Drawing;
+using ImageProcessor;
+
+class ImagePreprocessing
+{
+    public static float[] PreprocessImage(string imagePath)
+    {
+        // Open the image file
+        Image image = Image.FromFile(imagePath);
+
+        // Resize the image
+        int newWidth = 224;
+        int newHeight = 224;
+        Image resizedImage = new Bitmap(newWidth, newHeight);
+        using (Graphics g = Graphics.FromImage(resizedImage))
+        {
+            g.DrawImage(image, 0, 0, newWidth, newHeight);
+        }
+
+        // Convert the image to a byte array
+        byte[] imageData;
+        using (var memoryStream = new MemoryStream())
+        {
+            resizedImage.Save(memoryStream, image.RawFormat);
+            imageData = memoryStream.ToArray();
+        }
+
+        // Convert the byte array to a float array
+        float[] floatValues = new float[imageData.Length];
+        for (int i = 0; i < imageData.Length; i++)
+        {
+            floatValues[i] = (float)imageData[i];
+        }
+
+        return floatValues;
+    }
+}
+---
+from PIL import Image
+import numpy as np
+
+def preprocess_image(image_path):
+    # Open the image file
+    image = Image.open(image_path)
+
+    # Resize the image
+    new_size = (224, 224)
+    image = image.resize(new_size)
+
+    # Convert the image to a numpy array
+    image_array = np.array(image)
+
+    # Normalize the image
+    normalized_image_array = (image_array / 255.0).astype(np.float32)
+
+    # reshape it to 4D array
+    reshaped_image = normalized_image_array.reshape(1, 224, 224, 3)
+
+    return reshaped_image
+---
+สี
+import cv2
+
+def preprocess_image(image_path):
+    # Open the image file
+    image = cv2.imread(image_path)
+
+    # Resize the image
+    new_size = (224, 224)
+    image = cv2.resize(image, new_size)
+
+    # increase brightness by 50
+    image = cv2.addWeighted(image, 1.5, np.zeros(image.shape, image.dtype), 0, 50)
+
+    # convert to hsv
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+    # increase saturation
+    h, s, v = cv2.split(hsv)
+    s = cv2.addWeighted(s, 1.5, np.zeros(s.shape, s.dtype), 0, 50)
+    hsv = cv2.merge((h, s, v))
+
+    # convert back to bgr
+    image = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+
+    # Normalize the image
+    normalized_image_array = (image / 255.0).astype(np.float32)
+
+    # reshape it to 4D array
+    reshaped_image = normalized_image_array.reshape(1, 224, 224, 3)
+
+    return reshaped_image
