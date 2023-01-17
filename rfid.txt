@@ -1,0 +1,75 @@
+using System;
+
+string date1 = "17-01-2556 17:10:54";
+string date2 = "17-01-2556 22:04:14";
+
+DateTime dt1 = DateTime.ParseExact(date1, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+DateTime dt2 = DateTime.ParseExact(date2, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+
+TimeSpan difference = dt2 - dt1;
+double hours = difference.TotalHours;
+
+Console.WriteLine("The difference in hours between the two dates is: " + hours);
+---
+using System;
+
+string date1 = "17-01-2556 17:10:54";
+string date2 = "17-01-2556 22:04:14";
+
+DateTime dt1 = DateTime.ParseExact(date1, "dd-MM-yyyy HH:mm:ss", CultureInfo.CurrentCulture);
+DateTime dt2 = DateTime.ParseExact(date2, "dd-MM-yyyy HH:mm:ss", CultureInfo.CurrentCulture);
+
+TimeSpan difference = dt2 - dt1;
+
+Console.WriteLine("The difference in hours between the two dates is: " + difference.TotalHours);
+TimeSpan difference = dt2 - dt1;
+TimeSpan duration = difference.Duration();
+Console.WriteLine("The difference in hours between the two dates is: " + duration.TotalHours);
+----
+using System;
+
+string date1 = "19-01-2556 17:10:54";
+string date2 = "17-01-2556 22:04:14";
+
+DateTime dt1 = DateTime.ParseExact(date1, "dd-MM-yyyy HH:mm:ss", CultureInfo.CurrentCulture);
+DateTime dt2 = DateTime.ParseExact(date2, "dd-MM-yyyy HH:mm:ss", CultureInfo.CurrentCulture);
+
+if (dt1 > dt2)
+{
+    TimeSpan difference = dt1 - dt2;
+    Console.WriteLine("The difference in hours between the two dates is: " + difference.TotalHours);
+}
+else
+{
+    TimeSpan difference = dt2 - dt1;
+    Console.WriteLine("The difference in hours between the two dates is: " + difference.TotalHours);
+}
+TimeSpan difference = (dt1 - dt2).Duration();
+Console.WriteLine("The difference in hours between the two dates is: " + Math.Abs(difference.TotalHours));
+---
+using System;
+
+string date1 = "19-01-2556 17:10:54";
+string date2 = "17-01-2556 22:04:14";
+
+DateTime dt1;
+DateTime dt2;
+
+if (string.IsNullOrWhiteSpace(date1))
+{
+    dt1 = DateTime.ParseExact(date2, "dd-MM-yyyy HH:mm:ss", CultureInfo.CurrentCulture);
+    dt2 = DateTime.Now;
+}
+else if (string.IsNullOrWhiteSpace(date2))
+{
+    dt1 = DateTime.ParseExact(date1, "dd-MM-yyyy HH:mm:ss", CultureInfo.CurrentCulture);
+    dt2 = DateTime.Now;
+}
+else
+{
+    dt1 = DateTime.ParseExact(date1, "dd-MM-yyyy HH:mm:ss", CultureInfo.CurrentCulture);
+    dt2 = DateTime.ParseExact(date2, "dd-MM-yyyy HH:mm:ss", CultureInfo.CurrentCulture);
+}
+
+TimeSpan difference = (dt1 - dt2).Duration();
+Console.WriteLine("The difference in hours between the two dates is: " + Math.Abs(difference.TotalHours));
