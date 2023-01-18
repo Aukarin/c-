@@ -1,0 +1,53 @@
+TextBox txtInput = new TextBox();
+txtInput.KeyDown += new KeyEventHandler(txtInput_KeyDown);
+this.Controls.Add(txtInput);
+txtInput.Visible = false;
+
+private void txtInput_KeyDown(object sender, KeyEventArgs e)
+{
+    if (e.KeyCode == Keys.Enter)
+    {
+        // ตรวจสอบค่าที่ป้อนเข้ามาใน textbox
+        string value = txtInput.Text;
+        // ปิด textbox
+        txtInput.Visible = false;
+    }
+}
+...
+private void Form2_FormClosing(object sender, FormClosingEventArgs e)
+{
+    // your code here
+    this.Close();
+}
+
+public Form2()
+{
+    InitializeComponent();
+    this.FormClosing += Form2_FormClosing;
+}
+...
+private void Form2_Load(object sender, EventArgs e)
+{
+    // your code here
+    this.Close();
+}
+public Form2()
+{
+    InitializeComponent();
+    this.Load += Form2_Load;
+}
+...
+private void Form2_VisibleChanged(object sender, EventArgs e)
+{
+    if(Visible==false)
+    {
+        // your code here
+        this.Close();
+    }
+}
+public Form2()
+{
+    InitializeComponent();
+    this.VisibleChanged += Form2_VisibleChanged;
+}
+...
