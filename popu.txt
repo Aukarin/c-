@@ -1,0 +1,86 @@
+using Microsoft.VisualBasic;
+
+private void button1_Click(object sender, EventArgs e)
+{
+    string input = Interaction.InputBox("Please enter your name:", "Input", "default value");
+    // do something with input
+}
+---
+private void button1_Click(object sender, EventArgs e)
+{
+    string input = MessageBox.Show("Please enter your name:", "Input", MessageBoxButtons.OKCancel).ToString();
+    // do something with input
+}
+--
+private void button1_Click(object sender, EventArgs e)
+{
+    Form inputForm = new Form();
+    Label label = new Label();
+    TextBox textBox = new TextBox();
+    Button buttonOK = new Button();
+    Button buttonCancel = new Button();
+
+    inputForm.Text = "Input";
+    label.Text = "Please enter your name:";
+    buttonOK.Text = "OK";
+    buttonCancel.Text = "Cancel";
+
+    label.SetBounds(9, 20, 372, 13);
+    textBox.SetBounds(12, 36, 372, 20);
+    buttonOK.SetBounds(228, 72, 75, 23);
+    buttonCancel.SetBounds(309, 72, 75, 23);
+
+    inputForm.ClientSize = new Size(396, 107);
+    inputForm.Controls.AddRange(new Control[] { label, textBox, buttonOK, buttonCancel });
+    inputForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+    inputForm.StartPosition = FormStartPosition.CenterScreen;
+    inputForm.MinimizeBox = false;
+    inputForm.MaximizeBox = false;
+    inputForm.AcceptButton = buttonOK;
+    inputForm.CancelButton = buttonCancel;
+
+    buttonOK.Click += (s, e1) => { inputForm.Close(); };
+    buttonCancel.Click += (s, e1) => { inputForm.Close(); };
+    inputForm.ShowDialog();
+
+    // do something with textBox.Text
+}
+--
+private string ShowInputBox()
+{
+    Form inputForm = new Form();
+    Label label = new Label();
+    TextBox textBox = new TextBox();
+    Button buttonOK = new Button();
+    Button buttonCancel = new Button();
+
+    inputForm.Text = "Input";
+    label.Text = "Please enter your name:";
+    buttonOK.Text = "OK";
+    buttonCancel.Text = "Cancel";
+
+    label.SetBounds(9, 20, 372, 13);
+    textBox.SetBounds(12, 36, 372, 20);
+    buttonOK.SetBounds(228, 72, 75, 23);
+    buttonCancel.SetBounds(309, 72, 75, 23);
+
+    inputForm.ClientSize = new Size(396, 107);
+    inputForm.Controls.AddRange(new Control[] { label, textBox, buttonOK, buttonCancel });
+    inputForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+    inputForm.StartPosition = FormStartPosition.CenterScreen;
+    inputForm.MinimizeBox = false;
+    inputForm.MaximizeBox = false;
+    inputForm.AcceptButton = buttonOK;
+    inputForm.CancelButton = buttonCancel;
+
+    buttonOK.Click += (s, e) => { inputForm.Close(); };
+    buttonCancel.Click += (s, e) => { inputForm.Close(); };
+    inputForm.ShowDialog();
+
+    return textBox.Text;
+}
+private void button1_Click(object sender, EventArgs e)
+{
+    string input = ShowInputBox();
+    // do something with input
+}
