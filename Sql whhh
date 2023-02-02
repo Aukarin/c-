@@ -1,0 +1,41 @@
+UPDATE table1
+SET result = 
+    CASE 
+        WHEN C1 = 'a1' AND C2 = 'a2' AND C3 = 'a3' THEN 'true'
+        WHEN C1 = 'b1' AND C2 = 'b2' AND C3 = 'b3' THEN 'true'
+        ELSE 'false'
+    END;
+...
+UPDATE table1
+SET result = 'true'
+WHERE C1 = 'a1' AND C2 = 'a2' AND C3 = 'a3';
+...
+UPDATE table1
+SET result = 
+    CASE 
+        WHEN C1 = 'a1' AND C2 = 'a2' AND C3 = 'a3' THEN 'true'
+        WHEN C1 = 'b1' AND C2 = 'b2' AND C3 = 'b3' THEN 'true'
+        WHEN C1 = 'a1' AND C2 = 'a2' THEN 'h'
+        WHEN C1 = 'a1' AND C2 = 'a2' AND C3 = 'a3' THEN 'k'
+        ELSE 'false'
+    END;
+...
+UPDATE table1
+SET result = 
+    CASE 
+        WHEN C1 = 'a1' AND C2 = 'a2' AND C3 = 'a3' THEN 'true'
+        WHEN C1 = 'b1' AND C2 = 'b2' AND C3 = 'b3' THEN 'true'
+        WHEN C1 = 'a1' AND C2 = 'a2' THEN 'h'
+        WHEN C1 = 'a1' AND C2 = 'a2' AND C3 = 'a3' THEN 'k'
+        ELSE 'false'
+    END
+WHERE id IN (
+    SELECT id
+    FROM table1
+    WHERE (C1 = 'a1' AND C2 = 'a2' AND C3 = 'a3') OR
+          (C1 = 'b1' AND C2 = 'b2' AND C3 = 'b3') OR
+          (C1 = 'a1' AND C2 = 'a2') OR
+          (C1 = 'a1' AND C2 = 'a2' AND C3 = 'a3')
+    ORDER BY id DESC
+    LIMIT 1
+);
