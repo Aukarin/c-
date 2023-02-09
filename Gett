@@ -1,0 +1,24 @@
+$.ajax({
+  type: "GET",
+  url: "search.php",
+  data: { msn: "123.php" }
+})
+.done(function( msg ) {
+  console.log( "Data Saved: " + msg );
+});
+$msn = $_GET["msn"];
+...
+
+<form action="search.php" method="get">
+  <input type="text" name="query">
+  <input type="submit" value="Search">
+</form>
+...
+$.ajax({
+  type: 'GET',
+  url: 'http://example.com/search.php',
+  data: { query: 'your search query' },
+  success: function(data) {
+    console.log('Search results: ' + data);
+  }
+});
